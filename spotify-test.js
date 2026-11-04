@@ -17,8 +17,8 @@
 
 const SPOTIFY_CONFIG = {
   // Substitua pelos seus valores reais:
-  CLIENT_ID: "932936e8cba74240885cda918f3f96f4",
-  CLIENT_SECRET: "908293c77747491a8db63443feb32a53",
+  CLIENT_ID: "",
+  CLIENT_SECRET: "",
 
   // Scopes necessários para a aplicação
   SCOPES: [
