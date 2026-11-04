@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Festival Playlist Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- ── HEADER ── -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-icon" aria-hidden="true">🎪</span>
+          <span class="logo-text">Festival<strong>Playlist</strong></span>
+        </div>
+
+        <nav class="header-actions">
+          <button id="btn-theme" class="btn-icon" aria-label="Alternar tema" title="Alternar tema">
+            <span class="theme-icon">🌙</span>
+          </button>
+          <button id="btn-spotify-auth" class="btn btn-spotify">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+            </svg>
+            <span id="spotify-auth-label">Conectar ao Spotify</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- ── STEP 1: UPLOAD ── -->
+      <section class="step-card" id="step-upload" aria-labelledby="upload-heading">
+        <div class="step-badge">01</div>
+        <h2 id="upload-heading">Lineup do Festival</h2>
+        <p class="step-desc">Cole uma imagem do cartaz ou cole os nomes dos artistas diretamente.</p>
+
+        <div class="upload-area" id="upload-area" role="button" tabindex="0" aria-label="Área de upload de imagem">
+          <div class="upload-icon" aria-hidden="true">🖼️</div>
+          <p class="upload-primary">Arraste a imagem do cartaz aqui</p>
+          <p class="upload-secondary">ou</p>
+          <label class="btn btn-outline" for="file-input">
+            Escolher arquivo
+          </label>
+          <input type="file" id="file-input" accept="image/*" hidden aria-label="Selecionar imagem do cartaz" />
+          <p class="upload-hint">PNG, JPG, WEBP — até 10 MB</p>
+        </div>
+
+        <div class="divider"><span>ou insira manualmente</span></div>
+
+        <div class="manual-input-area">
+          <label for="manual-artists" class="label">Artistas (um por linha)</label>
+          <textarea
+            id="manual-artists"
+            class="textarea"
+            rows="6"
+            placeholder="Arctic Monkeys&#10;Billie Eilish&#10;Tame Impala&#10;The Strokes&#10;Doja Cat"
+            aria-label="Lista de artistas, um por linha"
+          ></textarea>
+        </div>
+
+        <button id="btn-extract" class="btn btn-primary btn-full">
+          <span class="btn-label">Extrair Artistas</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+      </section>
+
+      <!-- ── STEP 2: ARTISTS ── -->
+      <section class="step-card hidden" id="step-artists" aria-labelledby="artists-heading">
+        <div class="step-badge">02</div>
+        <h2 id="artists-heading">Artistas Encontrados</h2>
+        <p class="step-desc">Selecione os artistas que deseja incluir na playlist.</p>
+
+        <div class="artists-toolbar">
+          <button id="btn-select-all" class="btn btn-sm btn-ghost">Selecionar todos</button>
+          <button id="btn-deselect-all" class="btn btn-sm btn-ghost">Desmarcar todos</button>
+          <span class="artists-count" id="artists-count" aria-live="polite"></span>
+        </div>
+
+        <div class="artists-grid" id="artists-grid" role="group" aria-label="Lista de artistas"></div>
+
+        <button id="btn-to-filters" class="btn btn-primary btn-full">
+          Configurar Playlist →
+        </button>
+      </section>
+
+      <!-- ── STEP 3: FILTERS ── -->
+      <section class="step-card hidden" id="step-filters" aria-labelledby="filters-heading">
+        <div class="step-badge">03</div>
+        <h2 id="filters-heading">Configurar Playlist</h2>
+        <p class="step-desc">Ajuste as preferências antes de gerar.</p>
+
+        <div class="filters-grid">
+          <fieldset class="filter-group">
+            <legend>Músicas por artista</legend>
+            <div class="radio-group" role="radiogroup" aria-label="Quantidade de músicas por artista">
+              <label class="radio-card">
+                <input type="radio" name="tracks-per-artist" value="3" />
+                <span class="radio-label">3</span>
+                <span class="radio-desc">Rápido</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="tracks-per-artist" value="5" checked />
+                <span class="radio-label">5</span>
+                <span class="radio-desc">Equilibrado</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="tracks-per-artist" value="10" />
+                <span class="radio-label">10</span>
+                <span class="radio-desc">Completo</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="filter-group">
+            <legend>Organizar por</legend>
+            <div class="radio-group" role="radiogroup" aria-label="Organização da playlist">
+              <label class="radio-card">
+                <input type="radio" name="sort-by" value="popularity" checked />
+                <span class="radio-label">🔥</span>
+                <span class="radio-desc">Popularidade</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="sort-by" value="day" />
+                <span class="radio-label">📅</span>
+                <span class="radio-desc">Dia do evento</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="sort-by" value="genre" />
+                <span class="radio-label">🎸</span>
+                <span class="radio-desc">Gênero</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="sort-by" value="random" />
+                <span class="radio-label">🎲</span>
+                <span class="radio-desc">Aleatório</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="filter-group">
+            <legend>Nome da playlist</legend>
+            <input
+              type="text"
+              id="playlist-name"
+              class="input"
+              placeholder="Ex: Lollapalooza 2025"
+              value="Festival Mix"
+              aria-label="Nome da playlist"
+            />
+          </fieldset>
+        </div>
+
+        <button id="btn-generate" class="btn btn-primary btn-full">
+          <span class="btn-label">🎵 Gerar Playlist</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+      </section>
+
+      <!-- ── STEP 4: PLAYLIST ── -->
+      <section class="step-card hidden" id="step-playlist" aria-labelledby="playlist-heading">
+        <div class="step-badge">04</div>
+        <h2 id="playlist-heading">Sua Playlist</h2>
+
+        <div class="playlist-header">
+          <div class="playlist-meta" id="playlist-meta"></div>
+          <div class="playlist-actions">
+            <button id="btn-play-preview" class="btn btn-sm btn-ghost" title="Ouvir prévia">
+              ▶ Prévia
+            </button>
+            <button id="btn-export-spotify" class="btn btn-spotify btn-sm" disabled>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+              </svg>
+              Salvar no Spotify
+            </button>
+            <button id="btn-copy-tracks" class="btn btn-sm btn-outline">📋 Copiar lista</button>
+            <button id="btn-restart" class="btn btn-sm btn-ghost">↩ Recomeçar</button>
+          </div>
+        </div>
+
+        <div id="playlist-tracks" class="tracks-list" role="list" aria-label="Faixas da playlist"></div>
+      </section>
+    </main>
+
+    <!-- ── TOAST NOTIFICATIONS ── -->
+    <div class="toast-container" id="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+    <!-- ── PREVIEW MODAL ── -->
+    <div class="modal-overlay hidden" id="preview-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modal-title">Prévia da Playlist</h3>
+          <button class="btn-icon" id="modal-close" aria-label="Fechar">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- ── AUDIO PLAYER (oculto) ── -->
+    <audio id="preview-audio" preload="none"></audio>
+
+    <script src="spotify-test.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
